@@ -50,5 +50,11 @@ namespace Slack.NetStandard.Tests
         {
             Utility.AssertSubType<IMessageElement, Checkboxes>("Blocks_Checkboxes.json");
         }
+
+        [Fact]
+        public void Timepicker()
+        {
+            Utility.AssertSubType<IMessageElement, TimePicker>("Blocks_Timepicker.json");
+        }
     }
 }
