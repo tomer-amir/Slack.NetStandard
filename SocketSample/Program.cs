@@ -25,7 +25,6 @@ namespace SocketSample
             var webapi = new SlackWebApiClient(apptoken);
             var url = await webapi.Apps.OpenConnection();
             using var client = new ClientWebSocket();
-            client.Options.SetBuffer(50,50);
             var cancel = new CancellationTokenSource();
             while (Reconnect)
             {
