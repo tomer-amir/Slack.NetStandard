@@ -1,5 +1,7 @@
-﻿using System;
+﻿using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Slack.NetStandard.WebApi.Chat;
 
 namespace Slack.NetStandard.WebApi
@@ -38,11 +40,14 @@ namespace Slack.NetStandard.WebApi
 
         public Task<GetPermalinkResponse> Permalink(string channel, string timestamp)
         {
-            return _client.MakeJsonCall<GetPermalinkRequest, GetPermalinkResponse>("chat.getPermalink", new GetPermalinkRequest
+            var request = new GetPermalinkRequest
             {
                 Channel = channel,
                 Timestamp = timestamp
-            });
+            };
+            var content = new StringContent(JsonConvert.SerializeObject(request));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+            return _client.MakeJsonCall<GetPermalinkResponse>("chat.getPermalink", content);
         }
 
         public Task<MessageResponse> MeMessage(string channel, string text)

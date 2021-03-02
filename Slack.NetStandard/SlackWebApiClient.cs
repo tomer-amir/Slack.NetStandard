@@ -131,12 +131,17 @@ namespace Slack.NetStandard
             return ((IWebApiClient)this).MakeJsonCall<TRequest, WebApiResponse>(methodName, request);
         }
 
-        async Task<TResponse> IWebApiClient.MakeJsonCall<TRequest, TResponse>(string methodName, TRequest request)
+        Task<TResponse> IWebApiClient.MakeJsonCall<TRequest, TResponse>(string methodName, TRequest request)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(request));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" };
+            return ((IWebApiClient) this).MakeJsonCall<TResponse>(methodName, content);
+        }
+        
+        async Task<TResponse> IWebApiClient.MakeJsonCall<TResponse>(string methodName, StringContent content)
         {
             try
             {
-                var content = new StringContent(JsonConvert.SerializeObject(request));
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" };
                 var message = await Client.PostAsync(methodName, content);
                 return await GenerateResponseFromMessage<TResponse>(message);
             }
